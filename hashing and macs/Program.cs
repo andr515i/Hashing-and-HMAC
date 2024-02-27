@@ -1,4 +1,5 @@
 ﻿using hashing_and_macs.NewFolder;
+using hashing_and_macs.UI;
 using System.Text;
 
 namespace hashing_and_macs
@@ -7,11 +8,12 @@ namespace hashing_and_macs
 	{
 		static void Main(string[] args)
 		{
-			Hasher hasher = new Hasher();
-			MacHandler mh = new MacHandler("SHA256");
-			bool qwe = mh.CheckMessageAuthentication(Encoding.UTF8.GetBytes("test"), hasher.HashHMACSHA256Message("test", "test"), Encoding.UTF8.GetBytes("test"));
-            Console.WriteLine(qwe);
+			GUI ui = new GUI();
 
+			ui.Menu();
+
+
+			
             Console.Read();
 		}
 	}

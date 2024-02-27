@@ -12,7 +12,7 @@ namespace hashing_and_macs.NewFolder
 	/// <summary>
 	/// 
 	/// </summary>
-	internal class MacHandler
+	internal class MacHandler 
 	{
 		private HMAC MAC;
 
@@ -20,34 +20,39 @@ namespace hashing_and_macs.NewFolder
 		{
 			switch (macName.ToUpper())
 			{
-				case "SHA1":
+				case "HMACSHA1":
 					MAC = new HMACSHA1();
 					break;
-				case "MD5":
+				case "HMACMD5":
 					MAC = new HMACMD5();
 					break;
-				case "RIPEMD":
-					throw new Exception("Ripemd not found in cryptography namespace.");
-				case "SHA256":
+				case "HMACSHA256":
 					MAC = new HMACSHA256();
 					break;
-				case "SHA384":
+				case "HMACSHA384":
 					MAC = new HMACSHA384();
 					break;
-				case "SHA512":
+				case "HMACSHA512":
 					MAC = new HMACSHA512();
 					break;
 				default:
-					MAC = new Hasher();
-					break;
+					throw new Exception("mac name not found");
 			}
 		}
 
-		public byte[] ComputeMac(byte[] mes, byte[] key)
-		{
-			MAC.Key = key;
-			return MAC.ComputeHash(mes);
 
+		/// <summary>
+		/// generates the MAC value for the message baseed on the provided key.
+		/// </summary>
+		/// <param name="mes"></param>
+		/// <param name="key"></param>
+		/// <returns>messages hashed into MAC as byte[]</returns>
+		public byte[] ComputeMac(string message, string key)
+		{
+			byte[] mes = Encoding.UTF8.GetBytes(message);
+			byte[] keyBytes = Encoding.UTF8.GetBytes(key);
+			MAC.Key = keyBytes;
+			return MAC.ComputeHash(mes);
 		}
 
 
@@ -58,7 +63,7 @@ namespace hashing_and_macs.NewFolder
 		/// <param name="mes"></param>
 		/// <param name="mac"></param>
 		/// <param name="key"></param>
-		/// <returns></returns>
+		/// <returns>true if the 2 message's MAC's are the same.</returns>
 		public bool CheckMessageAuthentication(byte[] mes, byte[] mac, byte[] key)
 		{
 			this.MAC.Key = key;
@@ -79,7 +84,7 @@ namespace hashing_and_macs.NewFolder
 		/// <param name="incoming"></param>
 		/// <param name="existing"></param>
 		/// <param name="length"></param>
-		/// <returns></returns>
+		/// <returns>true if both message MAC's are the same</returns>
 		private bool CompareByteArray(byte[] incoming, byte[] existing, int length)
 		{
 
