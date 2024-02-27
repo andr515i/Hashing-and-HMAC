@@ -1,6 +1,7 @@
 ﻿using hashing_and_macs.NewFolder;
 using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace hashing_and_macs.UI
 {
@@ -49,19 +50,84 @@ namespace hashing_and_macs.UI
 				string selectedAlgorithm = algorithms[inputKey.Key];
 				Console.WriteLine($"You chose: {selectedAlgorithm}\n");
 
-				// Get user input for message and key
-				Console.WriteLine("Enter the message to be hashed:");
-				string inputMessage = Console.ReadLine()!;
-				Console.WriteLine("Enter the key for hashing:");
-				string inputKeyString = Console.ReadLine()!;
+				if (selectedAlgorithm == "non hmac")
+				{
+					Hasher hasher = new Hasher();
 
-				// Compute MAC and display
-				MacHandler mc = new MacHandler(selectedAlgorithm);
-				byte[] mac = mc.ComputeMac(inputMessage, inputKeyString);
-				string macAscii = BitConverter.ToString(mac);
-				string macHex = BitConverter.ToString(mac).Replace("-", "");
+					// Get user input for message
+					Console.WriteLine("Enter the message to be hashed:");
+					string inputMessage = Console.ReadLine();
 
-				ShowMessage(selectedAlgorithm, inputMessage, macAscii, macHex);
+					// Compute hash and display
+					byte[] hash = hasher.HashSHA256Message(inputMessage);
+					string hashAscii = BitConverter.ToString(hash);
+					string hashHex = BitConverter.ToString(hash).Replace("-", "");
+
+					ShowMessage(selectedAlgorithm, inputMessage, hashAscii, hashHex);
+
+					// Prompt user to verify hashing
+					Console.WriteLine("\nWould you like to verify the message hash? (Y/N)");
+					string verifyInput = Console.ReadLine();
+
+					if (verifyInput.ToUpper() == "Y")
+					{
+						Console.WriteLine("Enter the hash to compare:");
+						string inputHash = Console.ReadLine();
+
+						bool match = hasher.VerifySHA256Message(verifyInput, hash);
+
+						if (match)
+						{
+							Console.WriteLine("\nHashes match! The message is authentic.");
+						}
+						else
+						{
+							Console.WriteLine("\nHashes do not match! The message may be tampered with.");
+						}
+						Console.Read();
+					}
+				}
+				else
+				{
+					// Get user input for message and key
+					Console.WriteLine("Enter the message to be hashed:");
+					string inputMessage = Console.ReadLine();
+					Console.WriteLine("Enter the key for hashing:");
+					string inputKeyString = Console.ReadLine();
+
+					// Compute MAC and display
+					MacHandler mc = new MacHandler(selectedAlgorithm);
+					byte[] mac = mc.ComputeMac(inputMessage, inputKeyString);
+					string macAscii = BitConverter.ToString(mac);
+					string macHex = BitConverter.ToString(mac).Replace("-", "");
+
+					ShowMessage(selectedAlgorithm, inputMessage, macAscii, macHex);
+
+					Console.WriteLine("\nWould you like to verify message authentication? (Y/N)");
+					string verifyInput = Console.ReadLine();
+
+					if (verifyInput.ToUpper() == "Y")
+					{
+						Console.WriteLine("Enter the second message to compare:");
+						string secondMessage = Console.ReadLine();
+
+						// Compute MAC for the second message
+						byte[] secondMac = mc.ComputeMac(secondMessage, inputKeyString);
+
+						// Check if the MACs match
+						bool match = mc.CheckMessageAuthentication(Encoding.UTF8.GetBytes(secondMessage), mac, Encoding.UTF8.GetBytes(inputKeyString));
+
+						if (match)
+						{
+							Console.WriteLine("\nMACs match! The messages are authentic.");
+						}
+						else
+						{
+							Console.WriteLine("\nMACs do not match! The messages are not authentic.");
+						}
+						Console.Read();
+					}
+				}
 			}
 			catch (KeyNotFoundException)
 			{
@@ -69,7 +135,6 @@ namespace hashing_and_macs.UI
 				Console.ReadKey();
 			}
 		}
-
 		public void Menu()
 		{
 			bool exit = false;
@@ -80,7 +145,6 @@ namespace hashing_and_macs.UI
 				Console.WriteLine("Hashing and MACs Application\n");
 				Console.WriteLine("Menu:\n");
 				Console.WriteLine("1) Hash a message.");
-				Console.WriteLine("2) Verify a message.");
 				Console.WriteLine("Type 'exit' to quit.\n");
 
 				string input = Console.ReadLine()!;
@@ -90,11 +154,9 @@ namespace hashing_and_macs.UI
 					case "1":
 						ChooseHashOrHMACAlgorithm();
 						break;
-					case "2":
-						VerifyHash();
-						break;
 					case "exit":
-						exit = true;
+						// Console app
+						System.Environment.Exit(1);
 						break;
 					default:
 						Console.WriteLine("\nInvalid selection. Please try again.");
@@ -102,13 +164,6 @@ namespace hashing_and_macs.UI
 						break;
 				}
 			}
-		}
-
-		public void VerifyHash()
-		{
-			// Implement verification logic here
-			Console.WriteLine("Verification feature is under development.");
-			Console.ReadKey();
 		}
 	}
 }

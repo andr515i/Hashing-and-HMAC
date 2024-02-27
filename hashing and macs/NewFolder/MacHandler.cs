@@ -36,7 +36,7 @@ namespace hashing_and_macs.NewFolder
 					MAC = new HMACSHA512();
 					break;
 				default:
-					throw new Exception("mac name not found");
+					break;
 			}
 		}
 

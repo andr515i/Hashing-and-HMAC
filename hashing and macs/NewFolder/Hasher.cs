@@ -9,7 +9,6 @@ namespace hashing_and_macs.NewFolder
 {
 	public class Hasher
 	{
-
 		public byte[] HashSHA256Message(string message)
 		{
 			byte[] messageBytes = Encoding.UTF8.GetBytes(message);
@@ -18,42 +17,33 @@ namespace hashing_and_macs.NewFolder
 
 			using (SHA256 sha256 = SHA256.Create())
 			{
-				using (MemoryStream ms = new MemoryStream(messageBytes))
-				{
-					using (CryptoStream cs = new CryptoStream(ms, sha256, CryptoStreamMode.Read))
-					{
-						cs.CopyTo(Stream.Null);
-					}
-				}
-				hashValue = sha256.Hash!;
+				hashValue = sha256.ComputeHash(messageBytes);
 			}
 
 			return hashValue;
 		}
 
+		public bool VerifySHA256Message(string message, byte[] hashToCompare)
+		{
+			byte[] computedHash = HashSHA256Message(message);
+            Console.WriteLine(message);
+            Console.WriteLine("message: " + BitConverter.ToString(computedHash));
+			Console.WriteLine("hashToCompare: " + BitConverter.ToString(hashToCompare));
+			return CompareByteArray(computedHash, hashToCompare);
+		}
 
+		private bool CompareByteArray(byte[] array1, byte[] array2)
+		{
+			if (array1 == null || array2 == null || array1.Length != array2.Length)
+				return false;
 
-		public byte[] HashHMACSHA256Message(string message, string secretKey) {
-
-			byte[] messageBytes = Encoding.UTF8.GetBytes(message);
-
-			byte[] key = Encoding.UTF8.GetBytes(secretKey); //key for hmac
-
-			byte[] hmacValue;
-
-			using (HMACSHA256 hmac = new HMACSHA256(key))
+			for (int i = 0; i < array1.Length; i++)
 			{
-				using (MemoryStream ms = new MemoryStream(messageBytes))
-				{
-					using (CryptoStream cs = new CryptoStream(ms, hmac, CryptoStreamMode.Read))
-					{
-
-						cs.CopyTo(Stream.Null);
-					}
-				}
-				hmacValue = hmac.Hash!;
+				if (array1[i] != array2[i])
+					return false;
 			}
-			return hmacValue;
+
+			return true;
 		}
 	}
 }
