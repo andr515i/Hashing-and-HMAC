@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace hashing_and_macs.Cryptograpgy
+namespace hashing_and_macs.Cryptography
 {
 	public interface IEncryptionAlgorithm
 	{

@@ -1,4 +1,4 @@
-﻿using hashing_and_macs.Cryptograpgy;
+﻿using hashing_and_macs.Cryptography;
 using System.Security.Cryptography;
 using System.Text;
 

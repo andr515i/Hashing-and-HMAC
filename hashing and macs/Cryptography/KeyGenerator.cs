@@ -5,7 +5,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace hashing_and_macs.Cryptograpgy
+namespace hashing_and_macs.Cryptography
 {
 	internal class KeyGenerator
 	{
@@ -26,9 +26,31 @@ namespace hashing_and_macs.Cryptograpgy
 				default:
 					throw new ArgumentException("Invalid key size choice.");
 			}
-
 			RandomNumberGenerator.Fill(key);
-            return key;
+			return key;
+		}
+
+		public static byte[] GenerateIV(int byteSize)
+		{
+            Console.WriteLine("byte size for iv: " + byteSize);
+            byte[] key = new byte[byteSize];
+			RandomNumberGenerator.Fill(key);
+			return key;
+		}
+
+
+		public static byte[] GenerateDESKey()
+		{
+			byte[] key = new byte[8];
+			RandomNumberGenerator.Fill(key);
+			return key;
+		}
+
+		public static byte[] GenerateDESIV()
+		{
+			byte[] key = new byte[8];
+			RandomNumberGenerator.Fill(key);
+			return key;
 		}
 	}
 }

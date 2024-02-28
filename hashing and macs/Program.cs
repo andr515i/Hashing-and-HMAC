@@ -1,4 +1,5 @@
-﻿using hashing_and_macs.UI;
+﻿using hashing_and_macs.Cryptography;
+using hashing_and_macs.UI;
 using System;
 
 namespace hashing_and_macs
@@ -7,10 +8,13 @@ namespace hashing_and_macs
 	{
 		static void Main(string[] args)
 		{
-			GUI ui = new GUI();
+
+			List<IEncryptionAlgorithm> algorithms = new List<IEncryptionAlgorithm>();
+			algorithms.Add(new AES());
+			algorithms.Add(new DESEncrypter());
+			GUI ui = new GUI(algorithms);
 			ui.Menu();
 
-			Console.ReadLine();
 		}
 	}
 }
