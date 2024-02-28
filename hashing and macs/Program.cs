@@ -1,6 +1,5 @@
-﻿using hashing_and_macs.NewFolder;
-using hashing_and_macs.UI;
-using System.Text;
+﻿using hashing_and_macs.UI;
+using System;
 
 namespace hashing_and_macs
 {
@@ -9,12 +8,9 @@ namespace hashing_and_macs
 		static void Main(string[] args)
 		{
 			GUI ui = new GUI();
-
 			ui.Menu();
 
-
-			
-            Console.Read();
+			Console.ReadLine();
 		}
 	}
 }
